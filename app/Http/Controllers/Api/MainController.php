@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\BloodType;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\DonationRequest;
 use App\Models\Governorate;
 use App\Models\Post;
 use App\Models\Setting;
 use App\Traits\GeneralTrait;
+use Dotenv\Validator;
 use Illuminate\Http\Request;
 use function get_default_lang;
 use function response;
@@ -23,13 +25,6 @@ class MainController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function posts()
-    {
-        $posts = Post::with('category')->paginate(10);
-        return response() ->json(['success', '200', $posts]);
-
-    }
-
 
 
     public function governorates()
@@ -87,25 +82,80 @@ class MainController extends Controller
 
 
 
+
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function posts()
     {
-        //
+        $posts = Post::with('category')->paginate(10);
+        return response() ->json(['success', '200', $posts]);
+
     }
 
+
+    public function post(Request $request)
+    {
+        $rules = [
+            'post_id' => 'required|exists:posts,id',
+        ];
+
+        $validator = validator()->make($request->all(),$rules);
+        if ($validator->fails())
+        {
+            return response()->json([0,$validator->errors()->first(),$validator->errors()]);
+        }
+
+        $post = Post::where('id', $request->post_id)->get();
+
+        return response()->json([1, 'Success', $post]);
+    }
+
+    public function postFavourite(Request $request)
+    {
+        //RequestLog::create([''=> $request->all(),'service' => 'post toggle favourite']);
+        $rules = [
+            'post_id' => 'required|exists:posts,id',
+        ];
+
+        $validator = validator()->make($request->all(),$rules);
+        if ($validator->fails())
+        {
+            return response()->json([0,$validator->errors()->first(),$validator->errors()]);
+        }
+        $toggle = $request->user()->favourites()->toggle($request->post_id);
+        return response()->json([1, 'Success', $toggle]);
+    }
+
+    public function toggleFavourite(Request $request)
+    {
+        $post_id = $request->post_id;
+        $toggleFavourite = $request->user()->posts()->toggle($post_id);
+        return response()->json([1,'تم تبديل الحاله بنجاح', $toggleFavourite]);
+    }
     /**
-     * Store a newly created resource in storage.
+     * myFavourite a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function myFavourite(Request $request)
     {
-        //
+        $posts = $request->user()->favourites()->latest()->paginate(20);
+        return response()->json([1, 'Loaded...', $posts]);
+    }
+
+    public function donationRequest(Request $request)
+    {
+        $donation = DonationRequest::with('city', 'client')->find($request->donation_id);
+        return response()->json([1, 'Loaded...', $donation]);
+    }
+
+    public function contact(Request $request)
+    {
+
     }
 
     /**
