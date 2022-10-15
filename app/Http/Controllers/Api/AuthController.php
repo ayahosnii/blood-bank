@@ -9,46 +9,13 @@ use App\Models\Token;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
-
-
-    public function registerToken(Request $request)
-    {
-        $validation = validator::make($request->all(), [
-
-            'token' => 'required',
-            'type' => 'required|in:android,ios'
-        ]);
-        if ($validation->fails()) {
-            $data = $validation->errors();
-            return response()->json(0, $validation->errors()->first(), $data);
-        }
-        Token::where('token', $request->token)->delete();
-        $request->user()->tokens()->create($request->all());
-        return response()->json(1, 'تم التسجيل بنجاح');
-    }
-
-    public function removeToken(Request $request)
-    {
-        $validation = validator()->make($request->all(), [
-            'token' => 'required',
-        ]);
-
-        if ($validation->fails()) {
-            $data = $validation->errors();
-            return response()->json(0, $validation->errors()->first(), $data);
-        }
-
-        Token::where('token', $request->token)->delete();
-        return response()->json('token', 'تم الحذف بنجاح');
-    }
-
-
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -68,13 +35,46 @@ class AuthController extends Controller
             return response()->json([0, $validator->errors()->first(), $validator->errors()]);
         }
 
-        $request->merge([
-            'password'=> bcrypt($request->password),
-            ]);
+
         $client = Client::create($request->all());
         $client->api_token = Str::random(60);
         $client->save();
         return response()->json([1, 'Client is added successfully', $client]);
+    }
+
+
+
+    public function registerToken(Request $request){
+        $validator=Validator::make($request->all(),[
+
+            'token'=>'required',
+            'type'=>'required|in:android,ios',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json(['0',$validator->errors()->first(),$validator->errors()]);
+        }
+
+        Token::where('token',$request->token)->delete();
+        $request->user()->tokens()->create($request->all());
+        return response()->json(['1','تم التسجيل بنجاح']);
+
+    }
+
+    public function removeToken(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+            'token' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation -> errors();
+            return response()->json([0, $validation->errors()->first(), $data]);
+        }
+
+        Token::where('token', $request->token)->delete();
+        return response()->json([1, 'تم الحذف بنجاح']);
+
     }
 
     public function login(Request $request)
@@ -121,17 +121,25 @@ class AuthController extends Controller
             $code = rand(1111, 9999);
             $update = $user->update(['pin_code' => $code]);
             if ($update) {
-                smsMisr($request->phone,"your reset code is : " . $code);
 
                 // send sms
+                smsMisr($request->phone,"your reset code is : " . $code);
 
                 // send email
+                Mail::to($request->user())
+                    ->cc($moreUsers)
+                    ->bcc($evenMoreUsers)
+                    ->send(OrderShipped($order));
+
+                // mailtrap
+                //sendgrid
+                // ses amazon
 
 
 
-                return response()->json([1, 'برجاء فحص هاتفك', ['pin_code' => $code]]);
+                return responseJson(1, 'برجاء فحص هاتفك', ['pin_code' => $code]);
             } else {
-                return response()->json([0, 'حدث خطأ ، حاول مرة اخرى']);
+                return responseJson(0, 'حدث خطأ ، حاول مرة اخرى');
             }
 
         } else {
@@ -163,22 +171,10 @@ class AuthController extends Controller
       $loginUser->save();
 
 
-      if ($request->has('governorate_id'))
-      {
-          $loginUser->cities()->detach($request->city_id);
-          $loginUser->cities()->attach($request->city_id);
-      }
 
-
-      if ($request->has('blood_type_id'))
-      {
-          $bloodType = BloodType::where('id', $request->blood_type_id)->first();
-          $loginUser->bloodType()->detach($bloodType->id);
-          $loginUser->bloodType()->attach($bloodType->id);
-      }
 
       $data = [
-          'user' => $request->user()->fresh()->load('carModel', 'photos', 'trustIcons')
+          'user' => $request->user()->fresh()->load('city', 'bloodType')
       ];
 
       return response()->json([1, 'تم تحديث البيانات', $data]);

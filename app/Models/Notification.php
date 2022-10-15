@@ -11,7 +11,7 @@ class Notification extends Model
     public $timestamps = true;
     protected $fillable = ['title', 'content', 'donation_request_id'];
 
-    public function donate_request()
+    public function donationRequest()
     {
         return $this->belongsTo(DonationRequest::class, 'donation_request_id');
     }

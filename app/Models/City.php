@@ -11,17 +11,17 @@ class City extends Model
     public $timestamps = true;
     protected $fillable = ['name', 'governorate_id', 'city_name_en', 'city_name_ar'];
 
-    public function governoration()
+    public function governorate()
     {
         return $this->belongsTo(Governorate::class, 'governorate_id');
     }
 
-    public function clients()
+    public function client()
     {
         return $this->hasMany(Client::class);
     }
 
-    public function donate_requests()
+    public function donationRequest()
     {
         return $this->hasMany(DonationRequest::class);
     }

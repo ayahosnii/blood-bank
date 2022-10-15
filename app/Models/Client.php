@@ -11,8 +11,10 @@ class Client extends Authenticatable
 
     protected $table = 'clients';
     public $timestamps = true;
-    protected $fillable = ['name', 'email', 'd_o_b', 'last_donation_date', 'blood_type_id','governorate_id', 'city_id', 'phone', 'password'];
-    protected $appends = [/*'thumbnail_full_path',*/ 'is_favourite'];
+    protected $fillable = ['name', 'email', 'd_o_b', 'last_donation_date', 'blood_type_id',
+                           'governorate_id', 'city_id', 'phone', 'password'];
+
+    protected $appends = [/*'thumbnail_full_path',*/ /*'is_favourite'*/];
 
     protected $hidden = [
         'password',
@@ -36,22 +38,22 @@ class Client extends Authenticatable
         });
     }
 
-    public function governoration()
+    public function governorate()
     {
-        return $this->belongsToMany(Governorate::class, 'governorate_id');
+        return $this->belongsToMany(Governorate::class, 'client_governorate');
     }
 
-    public function cities()
+    public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
     }
 
-    public function blood_type()
+    public function bloodtypes()
     {
         return $this->belongsTo(BloodType::class, 'blood_type_id');
     }
 
-    public function donate_request()
+    public function donationRequest()
     {
         return $this->hasMany(DonationRequest::class);
     }
@@ -61,14 +63,17 @@ class Client extends Authenticatable
         return $this->belongsToMany(Notification::class);
     }
 
-    public function posts()
-    {
-        return $this->belongsToMany(Post::class);
-    }
+
 
     public function favourites()
     {
         return $this->belongsToMany(Post::class);
     }
+
+    public function tokens()
+    {
+        return $this->hasMany(Token::class);
+    }
+
 
 }

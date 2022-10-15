@@ -18,10 +18,16 @@ class DonationRequest extends Model
         return $this->belongsTo(Client::class, 'client_id');
     }
 
-    public function cities()
+    public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
 
 
     public function notification()

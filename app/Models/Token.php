@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Token extends Model
 {
     protected $table = 'tokens';
+    protected $fillable=['token','type','client_id'];
     public $timestamps = true;
-    protected $fillable = ['accountable_id','token','type', 'accountable_type'];
 
-    public function accountable()
-    {
-        return $this->morphTo();
+    public function client(){
+
+        return $this->belongsTo('App/Model/Client','client_id');
     }
 }

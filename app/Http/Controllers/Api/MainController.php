@@ -36,8 +36,8 @@ class MainController extends Controller
                 $query->select('governorate_name_ar')->get();
             }
         })->get();
-        $response = returnSuccessMessage('success', '200', $governorate);
-        return response() ->json($response);
+        return returnSuccessMessage('success', '200', $governorate);
+        //return response() ->json($response);
 
     }
 
@@ -132,7 +132,7 @@ class MainController extends Controller
     public function toggleFavourite(Request $request)
     {
         $post_id = $request->post_id;
-        $toggleFavourite = $request->user()->posts()->toggle($post_id);
+        $toggleFavourite = $request->user()->favourites()->toggle($post_id);
         return response()->json([1,'تم تبديل الحاله بنجاح', $toggleFavourite]);
     }
     /**
@@ -158,48 +158,4 @@ class MainController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
