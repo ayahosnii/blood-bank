@@ -43,26 +43,28 @@ class DonationRequestController extends Controller
                 'title' => $request->user()->bloodtypes->name.'احتاج متبرع للفصيلة',
                 'content' => $request->user()->name.'محتاج متبرع للفصيلة'
             ]);
+            $notification->clients()->attach($clientsIds);
+
+            $tokens = Token::whereIn('client_id', $clientsIds)->where('token', '!=', null)->pluck('token')->toArray();
+
+            if (count($tokens)) {
+
+                $title = $notification->title;
+                $body = $notification->content;
+                $data = [
+
+                    'donation_request_id' => $donationRequest->id
+                ];
+
+                $send = notifyByFirebase($title, $body, $tokens, $data);
+                info($send);
+            }
         }
 
-        $notification->clients()->attach($clientsIds);
 
         // Get Tokens For FCM (Push Notification Using Firebase Cloud)
 
-        $tokens = Token::whereIn('client_id', $clientsIds)->where('token', '!=', null)->pluck('token')->toArray();
 
-        if (count($tokens)) {
-
-            $title = $notification->title;
-            $body = $notification->content;
-            $data = [
-
-                'donation_request_id' => $donationRequest->id
-            ];
-
-            $send = notifyByFirebase($title, $body, $tokens, $data);
-            return $send;
-        }
 
 
         return response() ->json(['1', 'تم الاضافة بنجاح', $donationRequest]);

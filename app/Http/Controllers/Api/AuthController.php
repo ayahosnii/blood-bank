@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ResetPassword;
 use App\Models\BloodType;
 use App\Models\Client;
 use App\Models\Token;
@@ -41,6 +42,7 @@ class AuthController extends Controller
         $client->save();
         return response()->json([1, 'Client is added successfully', $client]);
     }
+
 
 
 
@@ -127,25 +129,55 @@ class AuthController extends Controller
 
                 // send email
                 Mail::to($request->user())
-                    ->cc($moreUsers)
-                    ->bcc($evenMoreUsers)
-                    ->send(OrderShipped($order));
-
+                    ->to($user->email)
+                    ->bcc("bloodbank@example.com")
+                    ->send(new ResetPassword($code, $user));
                 // mailtrap
                 //sendgrid
                 // ses amazon
 
-
-
-                return responseJson(1, 'برجاء فحص هاتفك', ['pin_code' => $code]);
+                return responseJson(1, 'برجاء فحص هاتفك',
+                    [
+                        'pin_code_for_test' => $code,
+                        'mail_fails' => Mail::failures()
+                    ]);
             } else {
-                return responseJson(0, 'حدث خطأ ، حاول مرة اخرى');
+                return responseJson(0, 'حدث خطأ ، حاول مرة أحرى');
             }
 
         } else {
-            return response()->json([0, 'حدث خطأ ، حاول مرة اخرى']);
+            return response()->json([0, 'حدث خطأ ، حاول مرة أخرى']);
         }
     }
+
+  public function newPassword(Request $request)
+  {
+      $validation = validator()->make($request->all(), [
+          'pin_code' => 'required',
+          'password' => 'required|confirmed'
+      ]);
+
+      if ($validation->fails())
+      {
+          return responseJson([0, $validation->errors()->first()]);
+      }
+
+      $user = Client::where('pin_code', $request->pin_code)->where('pin_code', '!=', 0)->first();
+
+
+      if ($user)
+      {
+          $user->password = $request->password;
+          $user->pin_code = NULL;
+
+          if ($user->save()) {
+              return responseJson([1, 'The password has changed successfully']);
+          } else {
+              return responseJson([0, 'pin code is error']);
+          }
+      }
+  }
+
   public function profile(Request $request)
   {
       $validation = validator()->make($request->all(), [
@@ -174,7 +206,7 @@ class AuthController extends Controller
 
 
       $data = [
-          'user' => $request->user()->fresh()->load('city', 'bloodType')
+          'user' => $request->user()->fresh()->load('city', 'bloodTypes')
       ];
 
       return response()->json([1, 'تم تحديث البيانات', $data]);

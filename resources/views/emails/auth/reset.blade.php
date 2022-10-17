@@ -1,15 +1,14 @@
+
 @component('mail::message')
-# Introduction
-
-Blood Bank Reset Password.
-
-@component('mail::button', ['url' => 'http://ipda3.com'])
-Reset
-@endcomponent
-
-<p>Your reset code is : {{$code}}</p>
-
-
-Thanks,<br>
-{{ config('app.name') }}
+    Hello **{{$user->name}}**,  {{-- use double space for line break --}}
+     **{{$content}}**
+    <p>
+        Thank you for choosing {{config ('app.name')}}!
+    Click below to start working right now
+    </p>
+    @component('mail::button', ['url' => $link])
+        Go to BloodBank website
+    @endcomponent
+    Sincerely,
+    BloodBank team.
 @endcomponent

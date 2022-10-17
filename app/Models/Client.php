@@ -12,7 +12,7 @@ class Client extends Authenticatable
     protected $table = 'clients';
     public $timestamps = true;
     protected $fillable = ['name', 'email', 'd_o_b', 'last_donation_date', 'blood_type_id',
-                           'governorate_id', 'city_id', 'phone', 'password'];
+                           'governorate_id', 'city_id', 'phone', 'password', 'activation', 'pin_code'];
 
     protected $appends = [/*'thumbnail_full_path',*/ /*'is_favourite'*/];
 
