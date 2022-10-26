@@ -29,9 +29,10 @@ Route::group(['prefix' => 'v1'], function (){
     Route::get('cities', [MainController::class, 'cities'])->name('city');
     Route::get('settings', [MainController::class, 'settings']);
     Route::get('categories', [MainController::class, 'categories']);
+    Route::post('contacts', [MainController::class, 'contact']);
     Route::get('blood-types', [MainController::class, 'bloodTypes']);
-    Route::post('register', [AuthController::class, 'register'])->name('register');
-    Route::post('login', [AuthController::class, 'login'])->name('login');
+    #Route::post('register', [AuthController::class, 'register'])->name('register');
+    #Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('reset.password');
     Route::post('new-password', [AuthController::class, 'newPassword'])->name('new.password');
 //    Route::get('api-posts', [\App\Http\Controllers\PostController::class, 'index'])->name('post');

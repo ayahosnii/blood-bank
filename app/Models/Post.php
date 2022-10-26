@@ -21,4 +21,8 @@ class Post extends Model
         return $this->hasMany(Client::class);
     }
 
+    public function getImageAttribute($val)
+    {
+        return ($val !== null) ? asset('admin/dist/' . $val) : "";
+    }
 }

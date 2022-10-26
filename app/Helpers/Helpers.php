@@ -7,6 +7,14 @@ function get_default_lang(){
     return Config::get('app.locale');
 }
 
+function uploadImage($folder, $image)
+{
+    $image->store('/', $folder);
+    $filename = $image->hashName();
+    $path = 'img/' . $folder . '/' . $filename;
+    return $path;
+}
+
 
 function returnSuccessMessage( $msg = "", $errNum="200", $data = null)
 {

@@ -9,7 +9,7 @@ class Governorate extends Model
 
     protected $table = 'governorates';
     public $timestamps = true;
-    protected $fillable = ['name'];
+    protected $fillable = ['name_ar', 'name_en'];
 
     public function cities()
     {
@@ -20,7 +20,6 @@ class Governorate extends Model
     {
         return $this->hasMany(Client::class);
     }
-
 
 
 }

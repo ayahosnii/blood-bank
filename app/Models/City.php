@@ -9,7 +9,7 @@ class City extends Model
 
     protected $table = 'cities';
     public $timestamps = true;
-    protected $fillable = ['name', 'governorate_id', 'city_name_en', 'city_name_ar'];
+    protected $fillable = ['city_name_ar', 'city_name_en', 'governorate_id'];
 
     public function governorate()
     {

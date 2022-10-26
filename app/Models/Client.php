@@ -11,7 +11,7 @@ class Client extends Authenticatable
 
     protected $table = 'clients';
     public $timestamps = true;
-    protected $fillable = ['name', 'email', 'd_o_b', 'last_donation_date', 'blood_type_id',
+    protected $fillable = ['id', 'name', 'email', 'd_o_b', 'last_donation_date', 'blood_type_id',
                            'governorate_id', 'city_id', 'phone', 'password', 'activation', 'pin_code'];
 
     protected $appends = [/*'thumbnail_full_path',*/ /*'is_favourite'*/];
@@ -38,6 +38,11 @@ class Client extends Authenticatable
         });
     }
 
+    public function contacts()
+    {
+        return $this->hasMany('App\Models\Contact');
+    }
+
     public function governorate()
     {
         return $this->belongsToMany(Governorate::class, 'client_governorate');
@@ -48,7 +53,7 @@ class Client extends Authenticatable
         return $this->belongsTo(City::class, 'city_id');
     }
 
-    public function bloodtypes()
+    public function bloodType()
     {
         return $this->belongsTo(BloodType::class, 'blood_type_id');
     }
@@ -74,6 +79,8 @@ class Client extends Authenticatable
     {
         return $this->hasMany(Token::class);
     }
+
+
 
 
 }

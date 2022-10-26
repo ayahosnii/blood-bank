@@ -10,9 +10,12 @@ use App\Models\DonationRequest;
 use App\Models\Governorate;
 use App\Models\Post;
 use App\Models\Setting;
+use App\Models\Contact;
+use App\Models\Client;
 use App\Traits\GeneralTrait;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use function get_default_lang;
 use function response;
 use function returnSuccessMessage;
@@ -155,7 +158,14 @@ class MainController extends Controller
 
     public function contact(Request $request)
     {
-
+        $clientId = Auth::guard('api')->user();
+        $message = Contact::create([
+            'email' => $request->email,
+            'subject' => $request->subject,
+            'message' => $request->message,
+            'client_id' => $clientId->id
+        ]);
+        return responseJson($message);
     }
 
 }

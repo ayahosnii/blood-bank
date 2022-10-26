@@ -9,7 +9,7 @@ class Category extends Model
 
     protected $table = 'categories';
     public $timestamps = true;
-    protected $fillable = ['name'];
+    protected $fillable = ['name_en', 'name_ar'];
 
     public function posts()
     {

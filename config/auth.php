@@ -52,7 +52,7 @@ return [
         ],
         'admin' => [
             'driver' => 'session',
-            'provider' => 'admins',
+            'provider' => 'admin',
         ],
     ],
 
@@ -82,9 +82,9 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Client::class,
         ],
-        'admins' => [
+        'admin' => [
             'driver' => 'database',
-            'model' => App\Models\Admin::class,
+            'model' => App\Models\User::class,
         ],
 
         // 'users' => [

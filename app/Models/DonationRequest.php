@@ -13,9 +13,14 @@ class DonationRequest extends Model
                             'longitude', 'client_id'];
     public $timestamps = true;
 
-    public function clients()
+    public function client()
     {
         return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    public function bloodType()
+    {
+        return $this->belongsTo(BloodType::class, 'blood_type_id');
     }
 
     public function city()
