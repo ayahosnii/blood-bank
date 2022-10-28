@@ -10,12 +10,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Governorates</h1>
+                        <h1 class="m-0">Users</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Governorates</li>
+                            <li class="breadcrumb-item active">Users</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="col-sm-2">
-                    <a href="{{route('governorates.create')}}" class="btn btn-block btn-primary btn-md" style="width: 150px;">Create +</a>
+                    <a href="{{route('users.create')}}" class="btn btn-block btn-primary btn-md" style="width: 150px;">Create +</a>
                 </div>
             </div>
             <div class="col-md-6">
@@ -42,42 +42,36 @@
           <thead>
             <tr>
               <th style="width: 10px">#</th>
-              <th>Governorates</th>
+              <th>Users</th>
               <th>Percentage</th>
                <th>Action</th>
               </tr>
           </thead>
         <tbody>
-          @if(count($governorates))
-            @foreach($governorates as $governorate)
+          @if(count($users))
+            @foreach($users as $user)
                <tr>
                  <td>{{$loop->iteration}}.</td>
-                  @if(get_default_lang() === 'en')
-                    <td>{{$governorate->name_en}}</td>
-                  @else
-                    <td>{{$governorate->name_ar}}</td>
-                  @endif
-                    <td>
-                          <span class="badge bg-danger">{{$governorate->client->count()}}</span>
-                    </td>
+                    <td>{{$user->name}}</td>
+                    <td>{{$user->email}}</td>
                    <td>
                        <div class="btn-group">
-                           <a href="{{route('governorates.edit',$governorate->id)}}" class="btn btn-app">
+                           <a href="{{route('users.edit',$user->id)}}" class="btn btn-app">
                                <i class="fas fa-edit"></i> Edit
                            </a>
-                           <a class="btn btn-app" data-toggle="modal" id="smallDelete" data-target="#smallModal" data-attr="{{ route('governorates.destroy', $governorate->id) }}" title="Delete Category">
+                           <a class="btn btn-app" data-toggle="modal" id="smallDelete" data-target="#smallModal" data-attr="{{ route('users.destroy', $user->id) }}" title="Delete Category">
                                <i class="fas fa-trash"></i> Delete
                            </a>
 
                            @push('deletion')
                            {!!  Form::open(
-                               ['route' => ['governorates.destroy', $governorate->id],
+                               ['route' => ['users.destroy', $user->id],
                                  'method' => 'delete',
                                  'class' => 'form-inline'
                                ])    !!}
 
                                <div class="modal-body">
-                                   <h5 class="text-center">Are you sure you want to delete [@if(get_default_lang() === 'en'){{$governorate->name_en}}@else{{$governorate->name_ar}}@endif] ?</h5>
+                                   <h5 class="text-center">Are you sure you want to delete [@if(get_default_lang() === 'en'){{$user->name_en}}@else{{$user->name_ar}}@endif] ?</h5>
                                </div>
                            @endpush
 
@@ -96,7 +90,7 @@
            @endif
         </tbody>
        </table>
-        {!!$governorates->links() !!}
+        {!!$users->links() !!}
     </div>
 </section>
 
@@ -109,10 +103,11 @@
                     $value=$(this).val();
                     $.ajax({
                         type : 'get',
-                        url : '{{URL::to('admin/gov/search')}}',
+                        url : '{{URL::to('admin/users/search')}}',
                         data:{'search':$value},
-                        success: function (data) {
+                        success:function(data){
                             $('tbody').html(data);
+                            console.log(data)
                         }
                     });
                 })

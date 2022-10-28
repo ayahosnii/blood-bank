@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_token" content="{{ csrf_token() }}">
     <title>BloodBank</title>
 
     <!-- Google Font: Source Sans Pro -->
@@ -26,6 +27,7 @@
     <!-- summernote -->
     <link rel="stylesheet" href="{{asset('admin/plugins/summernote/summernote-bs4.min.css')}}">
     <link href="{{asset('admin/css/laratrust.css')}}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 
 </head>
@@ -422,5 +424,7 @@
     $('#flash-overlay-modal').modal();
 </script>
 @yield('admin_script')
+@stack('scripts')
+<script src="{{asset('js/display_modal.js')}}"></script>
 </body>
 </html>

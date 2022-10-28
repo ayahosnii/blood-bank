@@ -52,11 +52,13 @@
 
                    <td>
                        <div class="btn-group">
+                           @permission('category-edit')
                            <a href="{{route('categories.edit',$category->id)}}" class="btn btn-app">
                                <i class="fas fa-edit"></i> Edit
                            </a>
+                           @endpermission
 
-                           {!!  Form::open(
+                           {{--{!!  Form::open(
                                ['route' => ['categories.destroy', $category->id],
                                  'method' => 'delete',
                                  'class' => 'form-inline'
@@ -66,7 +68,29 @@
                                <i class="fas fa-trash"></i> Delete
                            </button>
 
+                           {!! Form::close() !!}--}}
+
+                           <a class="btn btn-app" data-toggle="modal" id="smallDelete" data-target="#smallModal" data-attr="{{ route('categories.destroy', $category->id) }}" title="Delete Category">
+                           <i class="fas fa-trash"></i> Delete
+                           </a>
+
+
+
+                          @push('deletion')
+                              {!!  Form::open(
+                                    ['route' => ['categories.destroy', $category->id],
+                                     'method' => 'delete',
+                                      'class' => 'form-inline'
+                                            ])    !!}
+                               <div class="modal-body">
+                                   <h5 class="text-center">Are you sure you want to delete [@if(get_default_lang() === 'en'){{$category->name_en}}@else{{$category->name_ar}}@endif] ?</h5>
+                               </div>
+
+                           @endpush
+
+                           @include('admin.delete_modal.delete')
                            {!! Form::close() !!}
+
 
                        </div>
                    </td>
@@ -85,4 +109,10 @@
 </section>
 
 
+
+
+
 @endsection
+        @push('scripts')
+
+@endpush

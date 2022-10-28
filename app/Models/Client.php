@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laratrust\Traits\LaratrustUserTrait;
 use Laravel\Sanctum\HasApiTokens;
 
 class Client extends Authenticatable
 {
+    use LaratrustUserTrait;
     use HasApiTokens;
 
     protected $table = 'clients';

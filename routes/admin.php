@@ -8,7 +8,9 @@ use App\Http\Controllers\DonationsController;
 use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ContactsController;
+use App\Http\Controllers\SearchsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 use Laratrust\Http\Controllers\PermissionsController;
 use Laratrust\Http\Controllers\RolesAssignmentController;
@@ -29,11 +31,16 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 Route::group(['prefix' => 'admin'/*, 'middleware' => 'auth'*/], function(){
      Route::get('/dashboard', [DashboardController::class, 'index']);
      Route::resource('/governorates', GovernorateController::class);
+     Route::get('/governorates/search', [GovernorateController::class, 'search'])->name('governorates.search');
+     Route::get('/gov/search', [SearchsController::class, 'govSearch'])->name('gov.search');
      Route::resource('/cities', CitiesController::class);
      Route::resource('/categories', CategoriesController::class);
      Route::resource('/posts', PostsController::class);
      Route::resource('/clients', ClientsController::class);
-     Route::post('/changeStatus/{id}', [ClientsController::class, 'changeStatus'])->name('changeStatus');
+     Route::resource('/users', UsersController::class);
+     Route::get('/users/search', [SearchsController::class, 'userSearch'])->name('users.search');
+
+    Route::post('/changeStatus/{id}', [ClientsController::class, 'changeStatus'])->name('changeStatus');
      Route::resource('/contacts', ContactsController::class);
      Route::resource('/donations', DonationsController::class);
      Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
