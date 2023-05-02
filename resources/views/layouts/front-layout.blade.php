@@ -26,6 +26,7 @@
 </head>
 
 
+
 @yield('content')
 <!--footer-->
 <div class="footer">
